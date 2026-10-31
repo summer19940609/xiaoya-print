@@ -1,0 +1,13 @@
+{
+  "name": "xiaoya-print",
+  "version": "1.0.0",
+  "private": true,
+  "description": "小芽印坊：给孩子的可打印数字启蒙纸",
+  "scripts": {
+    "dev": "python3 -m http.server 4173 --directory public",
+    "deploy": "wrangler pages deploy public --project-name xiaoya-print --branch main"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

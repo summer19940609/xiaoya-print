@@ -1,0 +1,20 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "polish",
+  "scope": "app",
+  "shape": "app screen",
+  "theme": "the project's own, moss green on warm paper",
+  "surface": "restrained",
+  "entry": "print-settings tool polished in place: tokens, contrast, states, 4px scale",
+  "signature": "the printed sheet, cells cut on a dashed line",
+  "sections": "header, settings panel, preview stage, status line",
+  "hero": "none, app screen",
+  "nav": "wordmark with a hairline tagline",
+  "footer": "one status line",
+  "imagery": "none",
+  "answered": "F4",
+  "prompt": "数字裁剪格的打印设置与 A4 预览工具",
+  "date": "2026-10-31"
+ }
+]
