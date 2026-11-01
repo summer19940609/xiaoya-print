@@ -42,7 +42,7 @@
 
 ## 本地运行
 
-需要 Node.js 20.19+（20.x）或 22.12+：
+需要 Node.js 22.12 或更新版本；项目在 `.node-version` 中固定了 Node.js 22.16.0，供 Cloudflare Pages 构建使用：
 
 ```sh
 npm install
@@ -55,7 +55,7 @@ npm run dev
 
 ## 部署到 Cloudflare Pages
 
-项目名：`xiaoya-print`。构建命令：`npm run build`，静态发布目录：`dist`。`public` 中的字体、图标和 `_headers` 会自动复制到 `dist`。
+项目名：`xiaoya-print`。Git 自动部署时，在 Cloudflare Pages 项目设置中填写构建命令 `npm run build`；发布目录为 `dist`，由 `wrangler.jsonc` 指定。构建环境通过 `.node-version` 使用 Node.js 22.16.0。`public` 中的字体、图标和 `_headers` 会自动复制到 `dist`。
 
 首次在新电脑上部署：
 
