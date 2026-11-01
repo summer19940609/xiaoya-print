@@ -164,11 +164,11 @@ function renderSheets() {
   document.querySelector('label[for="copies"]').textContent = isMath ? '题目页数' : '重复份数';
   [...copies.options].forEach((option, index) => { option.textContent = `${index + 1} ${isMath ? '页' : '份'}`; });
   document.querySelector('.font-sample').dataset.font = font.value;
+  let toneIndex = 0;
   sheets.innerHTML = Array.from({ length: pageCount }, (_, page) => {
-    let toneIndex = 0;
     const content = cells.slice(page * capacity, (page + 1) * capacity).map(cell => {
       if (cell.kind === 'blank') return '<div class="cut-cell blank" aria-label="空白书写格"></div>';
-      const tone = `data-tone="${toneIndex % 4 + 1}"`;
+      const tone = `data-tone="${toneIndex % 7 + 1}"`;
       toneIndex += 1;
       if (cell.kind === 'math') return `<div class="cut-cell math-cell" ${tone} aria-label="${cell.text} 作答"><span class="cell-expression">${cell.text} <span class="answer-blank" aria-hidden="true"></span></span></div>`;
       const label = labelToggle.checked ? chineseNumber(cell.value) : '';

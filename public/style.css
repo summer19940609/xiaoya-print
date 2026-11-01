@@ -26,10 +26,13 @@
   --color-accent-ink:oklch(99.6% 0.006 235);
   --color-focus:oklch(50% 0.13 235);
   /* the ink the printed sheet spends, one tint per cell */
-  --color-print-1:oklch(46.5% 0.0459 150.2);
-  --color-print-2:oklch(58.2% 0.1 52.8);
-  --color-print-3:oklch(55.4% 0.0525 180.5);
-  --color-print-4:oklch(56.7% 0.0837 89.4);
+  --color-print-1:#d32f2f;
+  --color-print-2:#ef6c00;
+  --color-print-3:#c79500;
+  --color-print-4:#2e7d32;
+  --color-print-5:#008b9a;
+  --color-print-6:#1565c0;
+  --color-print-7:#7b1fa2;
   --color-print-mono:oklch(22.4% 0.006 240);
   --color-trace:oklch(66% 0.015 240);
   --color-cut:oklch(59% 0.012 240);
@@ -146,7 +149,7 @@ main{flex:1;min-height:0;padding:0 var(--space-md) var(--space-md)}
 @media (hover:hover){.segmented button:hover{color:var(--color-ink)}}
 .swatch{width:12px;height:12px;flex-shrink:0;border-radius:var(--radius-sm);box-shadow:inset 0 0 0 1px var(--color-rule-2)}
 .swatch-mono{background:var(--color-print-mono)}
-.swatch-color{background-image:linear-gradient(90deg,var(--color-print-1) 0 50%,var(--color-print-2) 50% 100%)}
+.swatch-color{background-image:conic-gradient(var(--color-print-1),var(--color-print-2),var(--color-print-3),var(--color-print-4),var(--color-print-5),var(--color-print-6),var(--color-print-7),var(--color-print-1))}
 
 .print-button{display:flex;align-items:center;justify-content:center;gap:var(--space-2xs);min-height:32px;padding:0 var(--space-sm);border:1px solid transparent;border-radius:var(--radius-md);background:var(--color-brand);color:var(--color-accent-ink);font-size:var(--text-sm);font-weight:500;white-space:nowrap;transition:background-color var(--dur-micro) var(--ease-out),transform var(--dur-micro) var(--ease-out)}
 .print-button:active{background:var(--color-brand-2);transform:translateY(1px)}
@@ -192,6 +195,9 @@ main{flex:1;min-height:0;padding:0 var(--space-md) var(--space-md)}
 .cut-cell[data-tone="2"]{--cell-ink:var(--color-print-2)}
 .cut-cell[data-tone="3"]{--cell-ink:var(--color-print-3)}
 .cut-cell[data-tone="4"]{--cell-ink:var(--color-print-4)}
+.cut-cell[data-tone="5"]{--cell-ink:var(--color-print-5)}
+.cut-cell[data-tone="6"]{--cell-ink:var(--color-print-6)}
+.cut-cell[data-tone="7"]{--cell-ink:var(--color-print-7)}
 .monochrome .cut-cell{--cell-ink:var(--color-print-mono)}
 .trace .cut-cell{--cell-ink:var(--color-trace)}
 .cell-number{font-family:var(--digit-font);font-size:calc(var(--cell-size)*var(--num-scale));font-weight:400;line-height:1;color:var(--cell-ink);font-variant-numeric:lining-nums;text-box:trim-both cap alphabetic}
