@@ -74,7 +74,8 @@
 *,*::before,*::after{box-sizing:border-box}
 [hidden]{display:none!important}
 html{overflow-x:clip}
-body{margin:0;height:100dvh;overflow-x:clip;overflow-y:hidden;display:flex;flex-direction:column;background:var(--color-paper);color:var(--color-ink);font:400 var(--text-md)/var(--leading) var(--font-body);-webkit-font-smoothing:antialiased}
+body{margin:0;height:100dvh;overflow-x:clip;overflow-y:hidden;background:var(--color-paper);color:var(--color-ink);font:400 var(--text-md)/var(--leading) var(--font-body);-webkit-font-smoothing:antialiased}
+#root{height:100%;display:flex;flex-direction:column}
 h1,h2{margin:0;overflow-wrap:break-word;min-width:0;text-wrap:balance}
 h2{font-size:var(--text-lg);font-weight:600;line-height:1.3}
 ::selection{background:var(--color-well-2);color:var(--color-ink)}
@@ -224,6 +225,10 @@ main{flex:1;min-height:0;padding:0 var(--space-md) var(--space-md)}
 .trace .tf-cell.filled{background:transparent;box-shadow:inset 0 0 0 1px var(--cell-ink)}
 .cell-expression{font-family:var(--digit-font);font-size:calc(var(--cell-size)*.15);font-weight:400;line-height:1;color:var(--cell-ink);font-variant-numeric:lining-nums;white-space:nowrap;letter-spacing:.02em;text-box:trim-both cap alphabetic}
 .answer-blank{display:inline-block;width:1.2em;height:0;margin-left:.08em;border-bottom:1px solid var(--color-cut);vertical-align:baseline}
+.learning-cell{display:flex;flex-direction:column;justify-content:center;gap:calc(var(--cell-size)*.08)}
+.problem-hint{font-family:var(--font-body);font-size:calc(var(--cell-size)*.1);line-height:1.3;color:var(--color-ink-2);white-space:nowrap}
+.learning-expression{display:flex;align-items:center;justify-content:center;font-family:var(--digit-font);font-size:calc(var(--cell-size)*.16);line-height:1;color:var(--cell-ink);white-space:nowrap}
+.problem-box{display:inline-block;flex:none;width:calc(var(--cell-size)*.2);height:calc(var(--cell-size)*.2);margin:0 calc(var(--cell-size)*.025);border:1px solid var(--color-cut)}
 
 @media (min-width:761px) and (max-height:700px){
   .settings{padding:var(--space-sm) var(--space-md)}
@@ -234,6 +239,7 @@ main{flex:1;min-height:0;padding:0 var(--space-md) var(--space-md)}
 }
 @media (max-width:760px){
   body{height:auto;overflow-x:clip;overflow-y:visible}
+  #root{height:auto}
   .site-header{height:48px;padding:0 var(--space-sm)}
   .brand{gap:var(--space-xs)}
   .brand img{width:28px;height:28px}
@@ -268,7 +274,7 @@ main{flex:1;min-height:0;padding:0 var(--space-md) var(--space-md)}
 }
 @page{size:A4 portrait;margin:0}
 @media print{
-  html,body{display:block!important;height:auto!important;overflow:visible!important;margin:0!important;padding:0!important;background:white!important}
+  html,body,#root{display:block!important;height:auto!important;overflow:visible!important;margin:0!important;padding:0!important;background:white!important}
   body{print-color-adjust:exact;-webkit-print-color-adjust:exact}
   .site-header,.settings,.preview-toolbar,.preview-footer{display:none!important}
   main,.workspace,.preview,.paper-stage,.paper-stack{display:block!important;height:auto!important;overflow:visible!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:none!important;width:auto!important;max-width:none!important;box-shadow:none!important}

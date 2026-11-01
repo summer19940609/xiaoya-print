@@ -2,12 +2,21 @@
   "name": "xiaoya-print",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "小芽印坊：给孩子的可打印数字启蒙纸",
   "scripts": {
-    "dev": "python3 -m http.server 4173 --directory public",
-    "deploy": "wrangler pages deploy public --project-name xiaoya-print --branch main"
+    "dev": "vite --port 4173",
+    "build": "vite build",
+    "preview": "vite preview --port 4173",
+    "test": "node --test",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name xiaoya-print --branch main"
   },
   "devDependencies": {
+    "vite": "^8.3.5",
     "wrangler": "^4.0.0"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   }
 }

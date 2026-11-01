@@ -1,20 +1,20 @@
 # 小芽印坊
 
-给孩子制作可打印、可裁剪的数字方格。纯 HTML、CSS、JavaScript，静态部署到 Cloudflare Pages。
+给孩子制作可打印、可裁剪的数字方格和数学题卡。基于 React 和 Vite，构建后静态部署到 Cloudflare Pages。
 
 ## 使用
 
 - 选择数字格子、描红格子或算术题卡。
 - 支持 1–10、11–20、1–20，及每个数字 1、2、3 份。
 - 自定义数字：选“自定义数字…”，用逗号或空格分隔，也可以写 `5-8` 这样的范围，例如 `1, 3, 5-8, 12`，最多 100 个，自动去重。
-- 算术题卡：10 或 20 以内的加法、减法与加减混合，按格子数自动出题，同页尽量不重复；每题等号后留一条作答横线。
+- 题卡：支持 10 或 20 以内的加法、减法、加减混合、比大小和数列填空，按格子数自动出题；计算题在等号后留作答横线，比大小和数列题留空格填写。
 - 打乱顺序：随机排列每一页的格子，适合抽认和随堂练习。
 - 空白书写格：在每个数字后加一格空格，先看数字再照着写。
 - 中文数字：在数字下方标注“十一”这样的中文读法（0–99）。
 - 数量提示：可选圆点或十宫格，直观表示 1–20 的数量；描红模式下变为空心，可以涂色。
 - 复制设置链接：把当前版式存进网址，发给另一位家长或老师即可还原同样的练习纸。
 - 支持 A4 四等分（2 列 × 2 行，每格 105 × 148.5 毫米）、八等分（2 列 × 4 行，每格 105 × 74.25 毫米），以及边长 4、5、6 厘米的正方形，自动分页。
-- 打印纸固定只保留数字、题目和裁剪线，不含标题、标志、说明和页码。
+- 打印纸只保留数字、题目、必要的作答提示和裁剪线，不含页面标题、标志和页码。
 - 默认黑白省墨，也可选择红、橙、黄、绿、青、蓝、紫七色循环。
 - 点击打印预览右上角的“打印练习纸”，可以发送到打印机或在浏览器窗口中另存为 PDF。
 
@@ -42,17 +42,20 @@
 
 ## 本地运行
 
-需要 Python 3：
+需要 Node.js 20.19+（20.x）或 22.12+：
 
 ```sh
+npm install
 npm run dev
 ```
+
+运行 `npm run build` 构建生产版本，`npm run preview` 可预览构建结果，`npm test` 运行单元测试。
 
 打开 http://localhost:4173。
 
 ## 部署到 Cloudflare Pages
 
-项目名：`xiaoya-print`。静态发布目录：`public`，无构建步骤。
+项目名：`xiaoya-print`。构建命令：`npm run build`，静态发布目录：`dist`。`public` 中的字体、图标和 `_headers` 会自动复制到 `dist`。
 
 首次在新电脑上部署：
 
@@ -70,7 +73,7 @@ npm run deploy
 npx wrangler pages project create xiaoya-print --production-branch main --force
 ```
 
-也可以通过 Cloudflare 控制台选择 Pages 直接上传，上传 `public` 文件夹。部署依据：[Cloudflare Pages 直接上传文档](https://developers.cloudflare.com/pages/get-started/direct-upload/)。
+也可以先运行 `npm run build`，再通过 Cloudflare 控制台选择 Pages 直接上传 `dist` 文件夹。部署依据：[Cloudflare Pages 直接上传文档](https://developers.cloudflare.com/pages/get-started/direct-upload/)。
 
 ## 数据
 
