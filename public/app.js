@@ -170,7 +170,7 @@ function renderSheets() {
       if (cell.kind === 'blank') return '<div class="cut-cell blank" aria-label="空白书写格"></div>';
       const tone = `data-tone="${toneIndex % 4 + 1}"`;
       toneIndex += 1;
-      if (cell.kind === 'math') return `<div class="cut-cell math-cell" ${tone} aria-label="${cell.text}"><span class="cell-expression">${cell.text}</span></div>`;
+      if (cell.kind === 'math') return `<div class="cut-cell math-cell" ${tone} aria-label="${cell.text} 作答"><span class="cell-expression">${cell.text} <span class="answer-blank" aria-hidden="true"></span></span></div>`;
       const label = labelToggle.checked ? chineseNumber(cell.value) : '';
       const note = quantityStyle !== 'none' && cell.value >= 1 && cell.value <= 20 ? noteMarkup(cell.value, quantityStyle) : '';
       const classes = ['cut-cell'];
