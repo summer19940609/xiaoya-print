@@ -1,6 +1,6 @@
 # 小芽印坊
 
-给孩子制作可打印、可裁剪的数字方格和数学题卡。基于 React 和 Vite，构建后静态部署到 Cloudflare Pages。
+给孩子制作可打印、可裁剪的数字方格和数学题卡。基于 React、Tailwind CSS 和 Vite，构建后静态部署到 Cloudflare Pages。
 
 ## 使用
 

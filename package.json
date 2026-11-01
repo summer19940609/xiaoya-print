@@ -12,6 +12,8 @@
     "deploy": "npm run build && wrangler pages deploy dist --project-name xiaoya-print --branch main"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "tailwindcss": "^4.3.3",
     "vite": "^8.3.5",
     "wrangler": "^4.0.0"
   },
