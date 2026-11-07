@@ -23,6 +23,11 @@ const traceShades = {
   medium: '[--trace-ink:var(--color-trace)] text-trace',
   dark: '[--trace-ink:var(--color-trace-dark)] text-trace-dark',
 };
+const sampleTraceShades = {
+  light: '[--trace-ink:var(--color-sample-trace-light)] text-sample-trace-light',
+  medium: '[--trace-ink:var(--color-sample-trace)] text-sample-trace',
+  dark: '[--trace-ink:var(--color-sample-trace-dark)] text-sample-trace-dark',
+};
 const fontTags = {
   sans: '印刷黑体',
   andika: '1无底横·4开口',
@@ -57,7 +62,7 @@ export function FontSample({ settings, customFontName }) {
   const trace = template === 'trace';
   const bold = fontWeight === 'bold';
   const sampleScale = fontScale === 'small' ? 'text-[19px] max-workspace:text-[18px]' : fontScale === 'large' ? 'text-[25px] max-workspace:text-[22px]' : 'text-[22px] max-workspace:text-[20px]';
-  const traceClass = trace ? `${traceShades[traceShade] || traceShades.medium} ${resolveTraceGlyphClass(true, traceStyle, bold, font)}` : `text-ink ${bold ? 'font-bold' : ''}`;
+  const traceClass = trace ? `${sampleTraceShades[traceShade] || sampleTraceShades.medium} ${resolveTraceGlyphClass(true, traceStyle, bold, font)}` : `text-ink ${bold ? 'font-bold' : ''}`;
   const tag = font === 'custom' ? `本地字体 · ${customFontName || '自定义'}` : fontTags[font] || fontTags.sans;
   return <div className={`flex min-h-12 items-center justify-between gap-2 overflow-hidden rounded-sm bg-well px-3 py-2 ${digitFonts[font] || digitFonts.sans} max-workspace:col-span-2 workspace:mt-2`} aria-label="所选字体预览">
     <span className={`leading-6 tracking-[.06em] whitespace-nowrap lining-nums ${sampleScale} ${traceClass}`}>{template === 'math' ? '12 + 8 = 20' : '1234567890'}</span>
@@ -109,7 +114,7 @@ function Cell({ cell, tone, settings, chineseNumber }) {
     if (cell.type === 'count') {
       const noteStyle = cell.value > 10 ? 'ten' : 'dots';
       return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.055)] [--mark-size:.068] [--mark-gap:.024] ${ink}`} aria-label={`点数 ${cell.value}，填数字`}>
-        <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-ink-2" aria-hidden="true">看图填数</span>
+        <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-print-label" aria-hidden="true">看图填数</span>
         <QuantityNote value={cell.value} style={noteStyle} trace={false} />
         <span className="flex items-center justify-center text-[calc(var(--cell-size)*.15*var(--font-scale,1))] leading-none whitespace-nowrap" aria-hidden="true"><span className={box} /></span>
       </div>;
@@ -118,7 +123,7 @@ function Cell({ cell, tone, settings, chineseNumber }) {
       const [total, left, right] = cell.values;
       const accessible = cell.missing === 0 ? `${left} 和 ${right} 合成几，填数字` : `${total} 分成 ${cell.missing === 1 ? `几 和 ${right}` : `${left} 和 几`}，填数字`;
       return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.03)] ${ink}`} aria-label={accessible}>
-        <span className="font-body text-[calc(var(--cell-size)*.095)] leading-[1.2] whitespace-nowrap text-ink-2" aria-hidden="true">数的分与合</span>
+        <span className="font-body text-[calc(var(--cell-size)*.095)] leading-[1.2] whitespace-nowrap text-print-label" aria-hidden="true">数的分与合</span>
         <span className={`flex flex-col items-center justify-center text-[calc(var(--cell-size)*.15*var(--font-scale,1))] leading-none whitespace-nowrap ${mathWeight}`} aria-hidden="true">
           <span className="flex items-center justify-center">{cell.missing === 0 ? <span className={box} /> : total}</span>
           <svg className="my-[calc(var(--cell-size)*.015)] h-[calc(var(--cell-size)*.11)] w-[calc(var(--cell-size)*.36)] stroke-cut" viewBox="0 0 36 12" fill="none"><path d="M18 1L7 11M18 1L29 11" strokeWidth="1.3" strokeLinecap="round" /></svg>
@@ -132,7 +137,7 @@ function Cell({ cell, tone, settings, chineseNumber }) {
     if (cell.type === 'neighbor') {
       const center = cell.values[1];
       return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.08)] ${ink}`} aria-label={`${center} 的相邻数，填数字`}>
-        <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-ink-2" aria-hidden="true">填相邻数</span>
+        <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-print-label" aria-hidden="true">填相邻数</span>
         <span className={`flex items-center justify-center text-[calc(var(--cell-size)*.16*var(--font-scale,1))] leading-none whitespace-nowrap ${mathWeight}`} aria-hidden="true"><span className={box} />，{center}，<span className={box} /></span>
       </div>;
     }
@@ -140,7 +145,7 @@ function Cell({ cell, tone, settings, chineseNumber }) {
       const [first, second, answer] = cell.values;
       const accessible = `${cell.missing === 0 ? '空格' : first} ${cell.operator} ${cell.missing === 1 ? '空格' : second} = ${answer}，填数字`;
       return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.08)] ${ink}`} aria-label={accessible}>
-        <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-ink-2" aria-hidden="true">填数字</span>
+        <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-print-label" aria-hidden="true">填数字</span>
         <span className={`flex items-center justify-center text-[calc(var(--cell-size)*.15*var(--font-scale,1))] leading-none whitespace-nowrap ${mathWeight}`} aria-hidden="true">{cell.missing === 0 ? <span className={box} /> : first} {cell.operator} {cell.missing === 1 ? <span className={box} /> : second} = {answer}</span>
       </div>;
     }
@@ -149,7 +154,7 @@ function Cell({ cell, tone, settings, chineseNumber }) {
       const values = cell.values.map((value, index) => !compare && index === cell.missing ? '空格' : String(value));
       const accessible = compare ? `${values[0]} 和 ${values[1]}，填写大于、小于或等于` : `${values.join('、')}，填数字`;
       return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.08)] ${ink}`} aria-label={accessible}>
-        <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-ink-2" aria-hidden="true">{compare ? '填 >、< 或 =' : '填数字'}</span>
+        <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-print-label" aria-hidden="true">{compare ? '填 >、< 或 =' : '填数字'}</span>
         <span className={`flex items-center justify-center text-[calc(var(--cell-size)*.16*var(--font-scale,1))] leading-none whitespace-nowrap ${mathWeight}`} aria-hidden="true">{compare ? <>{cell.values[0]}<span className={box} />{cell.values[1]}</> : cell.values.map((value, index) => <React.Fragment key={index}>{index > 0 ? '，' : null}{index === cell.missing ? <span className={box} /> : value}</React.Fragment>)}</span>
       </div>;
     }

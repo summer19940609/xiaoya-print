@@ -27,9 +27,13 @@
   --color-print-blue: #1565c0;
   --color-print-purple: #7b1fa2;
   --color-print-mono: oklch(22.4% 0.006 240);
+  --color-print-label: oklch(41.5% 0.03 245);
   --color-trace-light: oklch(77% 0.012 240);
   --color-trace: oklch(66% 0.015 240);
   --color-trace-dark: oklch(52% 0.018 240);
+  --color-sample-trace-light: var(--color-trace-light);
+  --color-sample-trace: var(--color-trace);
+  --color-sample-trace-dark: var(--color-trace-dark);
   --color-cut: oklch(59% 0.012 240);
   --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
   --font-digit-sans: XiaoyaSans, var(--font-body);
@@ -43,6 +47,70 @@
   --font-digit-dots: XiaoyaDots, var(--font-body);
   --font-digit-custom: XiaoyaCustom, var(--font-body);
   --shadow-sheet: 0 3px 20px oklch(31% 0.02 240 / 0.10);
+}
+
+:root,
+:root[data-theme="sky"] {
+  color-scheme: light;
+}
+
+:root[data-theme="sprout"] {
+  color-scheme: light;
+  --color-paper: oklch(97.1% 0.015 84);
+  --color-paper-2: oklch(98.4% 0.01 84);
+  --color-panel: oklch(99.3% 0.006 84);
+  --color-well: oklch(94.8% 0.022 145);
+  --color-well-2: oklch(92.6% 0.03 145);
+  --color-mat: oklch(95.4% 0.018 82);
+  --color-mat-dot: oklch(82% 0.03 82 / 0.65);
+  --color-rule: oklch(91.2% 0.014 82);
+  --color-rule-2: oklch(86% 0.02 82);
+  --color-edge: oklch(61% 0.026 95);
+  --color-ink: oklch(32% 0.026 140);
+  --color-ink-2: oklch(40% 0.028 140);
+  --color-muted: oklch(50% 0.024 120);
+  --color-brand: oklch(46.5% 0.115 154);
+  --color-brand-2: oklch(41.5% 0.115 154);
+  --color-accent-ink: oklch(99.5% 0.006 150);
+  --color-focus: oklch(46.5% 0.125 154);
+  --shadow-sheet: 0 3px 20px oklch(28% 0.025 80 / 0.12);
+}
+
+:root[data-theme="night"] {
+  color-scheme: dark;
+  --color-paper: oklch(17.5% 0.016 240);
+  --color-paper-2: oklch(19.5% 0.016 240);
+  --color-panel: oklch(21.5% 0.017 240);
+  --color-well: oklch(26% 0.024 235);
+  --color-well-2: oklch(29.5% 0.03 235);
+  --color-mat: oklch(15% 0.015 240);
+  --color-mat-dot: oklch(34% 0.025 235 / 0.65);
+  --color-rule: oklch(28.5% 0.016 240);
+  --color-rule-2: oklch(34% 0.02 240);
+  --color-edge: oklch(45% 0.024 240);
+  --color-ink: oklch(93% 0.01 235);
+  --color-ink-2: oklch(81% 0.015 235);
+  --color-muted: oklch(68% 0.018 235);
+  --color-brand: oklch(72% 0.115 220);
+  --color-brand-2: oklch(77% 0.115 220);
+  --color-accent-ink: oklch(17% 0.02 235);
+  --color-focus: oklch(72% 0.12 220);
+  --color-sample-trace-light: oklch(48% 0.018 235);
+  --color-sample-trace: oklch(63% 0.018 235);
+  --color-sample-trace-dark: oklch(79% 0.018 235);
+  --shadow-sheet: 0 6px 28px oklch(6% 0.01 240 / 0.55);
+}
+
+:root[data-theme-switching] *,
+:root[data-theme-switching] *::before,
+:root[data-theme-switching] *::after {
+  transition-duration: 0s !important;
+}
+
+@media print {
+  :root {
+    color-scheme: light;
+  }
 }
 
 /* Tailwind has no utilities for declaring font faces or the printed page size. */

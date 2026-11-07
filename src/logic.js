@@ -35,6 +35,13 @@ export const fontScaleLabels = { small: '紧凑留白', normal: '标准适中', 
 export const fontWeightLabels = { normal: '标准笔画', bold: '加粗醒目' };
 export const traceStyleLabels = { outline: '空心双线', solid: '浅灰实心', dotted: '点阵虚线' };
 export const traceShadeLabels = { light: '浅淡省墨', medium: '适中清晰', dark: '加深醒目' };
+export const themeLabels = { sky: '晴空', sprout: '新芽', night: '夜灯' };
+export const themeTitles = { sky: '晴空印台 · 清朗蓝灰', sprout: '新芽原纸 · 暖米草木', night: '夜灯工坊 · 静谧深色' };
+export const themeColors = { sky: '#006c9d', sprout: '#1d6b47', night: '#111820' };
+export const defaultTheme = 'sky';
+export function resolveTheme(value) {
+  return Object.prototype.hasOwnProperty.call(themeLabels, value) ? value : defaultTheme;
+}
 export const defaults = { template: 'number', range: '1-10', custom: '1, 3, 5-8, 12', math: 'add10', shuffle: false, blank: false, label: false, parity: false, grid: false, note: 'none', font: 'sans', fontScale: 'normal', fontWeight: 'normal', traceStyle: 'outline', traceShade: 'medium', size: '50', copies: '1', color: 'mono' };
 
 export function readSettings(search) {

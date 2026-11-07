@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { chineseNumber, fontLabels, fontScaleLabels, fontWeightLabels, layouts, makeCells, mathLabels, parseCustom, readSettings, settingsQuery, sizeLabels, traceShadeLabels, traceStyleLabels } from './logic.js';
+import { chineseNumber, defaultTheme, fontLabels, fontScaleLabels, fontWeightLabels, layouts, makeCells, mathLabels, parseCustom, readSettings, resolveTheme, settingsQuery, sizeLabels, themeColors, themeLabels, themeTitles, traceShadeLabels, traceStyleLabels } from './logic.js';
 import Sheet, { FontSample } from './Sheet.jsx';
 import './styles.css';
 
@@ -14,7 +14,28 @@ function Select({ id, value, onChange, children }) {
   return <span className="relative grid min-w-0"><select className={selectClass} id={id} value={value} onChange={onChange}>{children}</select><svg aria-hidden="true" viewBox="0 0 10 6" className="pointer-events-none absolute top-1/2 right-3 h-1.5 w-2.5 -translate-y-1/2 text-muted"><path d="M1 1l4 3.6L9 1" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg></span>;
 }
 
+function readInitialTheme() {
+  const fromQuery = new URLSearchParams(window.location.search).get('theme');
+  if (fromQuery && Object.prototype.hasOwnProperty.call(themeLabels, fromQuery)) return fromQuery;
+  try {
+    return resolveTheme(localStorage.getItem('xiaoya-theme'));
+  } catch {
+    return defaultTheme;
+  }
+}
+
+function ThemeIcon({ theme }) {
+  if (theme === 'sprout') {
+    return <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M8 13.5V7.5" /><path d="M8 10C4.5 10 3 7.8 3.2 4.8 6.4 4.8 8.2 6.5 8 10Z" /><path d="M8 8.2C8 5.2 9.8 3.3 13 3.2c.2 3-1.6 5-5 5Z" /></svg>;
+  }
+  if (theme === 'night') {
+    return <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12.8 9.8A5.2 5.2 0 0 1 6.2 3.2a5.2 5.2 0 1 0 6.6 6.6Z" /></svg>;
+  }
+  return <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.45" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="2.8" /><path d="M8 2v1.5M8 12.5V14M2 8h1.5M12.5 8H14M3.8 3.8l1.1 1.1M11.1 11.1l1.1 1.1M12.2 3.8l-1.1 1.1M4.9 11.1l-1.1 1.1" /></svg>;
+}
+
 function App() {
+  const [theme, setTheme] = useState(readInitialTheme);
   const [settings, setSettings] = useState(() => readSettings(window.location.search));
   const [copied, setCopied] = useState(false);
   const [customFontName, setCustomFontName] = useState('');
@@ -31,6 +52,26 @@ function App() {
     const url = `${location.pathname}${query ? `?${query}` : ''}${location.hash}`;
     if (`${location.pathname}${location.search}${location.hash}` !== url) history.replaceState(null, '', url);
   }, [settings]);
+  useEffect(() => {
+    const root = document.documentElement;
+    const changed = root.dataset.theme && root.dataset.theme !== theme;
+    if (changed) root.dataset.themeSwitching = '';
+    root.dataset.theme = theme;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', themeColors[theme] || themeColors.sky);
+    try {
+      localStorage.setItem('xiaoya-theme', theme);
+    } catch {}
+    if (changed) {
+      const id = requestAnimationFrame(() => requestAnimationFrame(() => {
+        delete root.dataset.themeSwitching;
+      }));
+      return () => {
+        cancelAnimationFrame(id);
+        delete root.dataset.themeSwitching;
+      };
+    }
+  }, [theme]);
 
   async function handleFontUpload(event) {
     const file = event.target.files?.[0];
@@ -85,7 +126,12 @@ function App() {
   }
   const templates = { number: '数字格子', trace: '描红格子', math: '算术题卡' };
   return <>
-    <header className="flex h-12 shrink-0 items-center px-3 workspace:h-14 workspace:px-6 print:!hidden"><a className={`flex min-w-0 items-center gap-2 whitespace-nowrap ${focus}`} href="./" aria-label="小芽印坊首页"><img className="h-7 w-7 shrink-0 workspace:h-8 workspace:w-8" src="favicon.svg" alt="" width="32" height="32" /><h1 className="text-[16px] leading-[1.2] font-semibold workspace:text-[18px]">小芽印坊</h1><span className="border-l border-rule-2 pl-3 text-[12px] text-muted">数字裁剪格打印工具</span></a></header>
+    <header className="flex h-12 shrink-0 items-center justify-between gap-2 px-3 workspace:h-14 workspace:px-6 print:!hidden">
+      <a className={`flex min-w-0 items-center gap-2 whitespace-nowrap ${focus}`} href="./" aria-label="小芽印坊首页"><img className="h-7 w-7 shrink-0 workspace:h-8 workspace:w-8" src="favicon.svg" alt="" width="32" height="32" /><h1 className="text-[16px] leading-[1.2] font-semibold workspace:text-[18px]">小芽印坊</h1><span className="border-l border-rule-2 pl-3 text-[12px] text-muted max-[460px]:hidden">数字裁剪格打印工具</span></a>
+      <div className="flex shrink-0 items-center gap-0.5 rounded-md border border-rule-2 bg-well p-0.5" role="group" aria-label="界面主题">
+        {Object.entries(themeLabels).map(([value, text]) => <button className={`flex min-h-7 cursor-pointer items-center gap-1 rounded-[5px] border border-transparent px-2 text-[12px] leading-none whitespace-nowrap text-muted transition-colors hover:text-ink aria-pressed:border-rule-2 aria-pressed:bg-panel aria-pressed:font-medium aria-pressed:text-brand workspace:px-2.5 ${focus}`} type="button" aria-pressed={theme === value} title={themeTitles[value]} onClick={() => setTheme(value)} key={value}><ThemeIcon theme={value} /><span>{text}</span></button>)}
+      </div>
+    </header>
     <main className={`min-h-0 flex-1 px-2 pb-2 workspace:px-4 workspace:pb-4 ${printReset}`}><div className={`flex h-auto flex-col overflow-hidden rounded-[10px] border border-rule bg-panel workspace:grid workspace:h-full workspace:grid-cols-[320px_minmax(0,1fr)] ${printReset}`}>
       <aside className="flex min-h-0 flex-col border-b border-rule bg-panel p-3 workspace:overflow-hidden workspace:border-r workspace:border-b-0 workspace:px-4 workspace:pt-4 workspace:pb-6 print:!hidden">
         <div className="shrink-0 workspace:mb-4"><h2 className="text-[16px] leading-[1.3] font-semibold">打印设置</h2></div><div className="grid min-h-0 grid-cols-2 gap-3 workspace:block workspace:flex-1 workspace:overflow-auto workspace:overscroll-contain workspace:[scrollbar-gutter:stable]">

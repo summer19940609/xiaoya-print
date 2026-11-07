@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { chineseNumber, defaults, makeCells, makeProblem, mathLabels, numberParity, parseCustom, readSettings, settingsQuery } from '../src/logic.js';
+import { chineseNumber, defaults, defaultTheme, makeCells, makeProblem, mathLabels, numberParity, parseCustom, readSettings, resolveTheme, settingsQuery, themeLabels } from '../src/logic.js';
 
 test('自定义数字、中文数字与单双数', () => {
   assert.deepEqual(parseCustom('1, 3，5-8, 3'), [1, 3, 5, 6, 7, 8]);
@@ -24,6 +24,15 @@ test('链接设置校验与还原', () => {
   assert.equal(settingsQuery({ ...defaults, font: 'custom' }), '');
   const math = { ...defaults, template: 'math', math: 'bond20' };
   assert.deepEqual(readSettings(`?${settingsQuery(math)}`), math);
+});
+
+test('主题校验与默认回退', () => {
+  assert.deepEqual(Object.keys(themeLabels), ['sky', 'sprout', 'night']);
+  assert.equal(resolveTheme('sky'), 'sky');
+  assert.equal(resolveTheme('sprout'), 'sprout');
+  assert.equal(resolveTheme('night'), 'night');
+  assert.equal(resolveTheme('invalid'), defaultTheme);
+  assert.equal(resolveTheme(null), defaultTheme);
 });
 
 test('数字格子份数、预设范围、空白格与无效输入', () => {
