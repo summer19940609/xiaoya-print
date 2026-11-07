@@ -27,14 +27,32 @@
   --color-print-blue: #1565c0;
   --color-print-purple: #7b1fa2;
   --color-print-mono: oklch(22.4% 0.006 240);
+  --color-trace-light: oklch(77% 0.012 240);
   --color-trace: oklch(66% 0.015 240);
+  --color-trace-dark: oklch(52% 0.018 240);
   --color-cut: oklch(59% 0.012 240);
   --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+  --font-digit-sans: XiaoyaSans, var(--font-body);
+  --font-digit-andika: XiaoyaAndika, var(--font-body);
+  --font-digit-short: XiaoyaShort, var(--font-body);
+  --font-digit-xiaoya: XiaoyaLead, var(--font-body);
+  --font-digit-round: XiaoyaRound, var(--font-body);
+  --font-digit-wenkai: XiaoyaWenkai, var(--font-body);
+  --font-digit-yozai: XiaoyaYozai, var(--font-body);
+  --font-digit-serif: XiaoyaSerif, var(--font-body);
+  --font-digit-dots: XiaoyaDots, var(--font-body);
+  --font-digit-custom: XiaoyaCustom, var(--font-body);
   --shadow-sheet: 0 3px 20px oklch(31% 0.02 240 / 0.10);
 }
 
 /* Tailwind has no utilities for declaring font faces or the printed page size. */
 @font-face { font-family: XiaoyaSans; src: url('/fonts/noto-sans-sc-digits.woff2') format('woff2'); font-display: block; font-weight: 400; }
+@font-face { font-family: XiaoyaAndika; src: url('/fonts/andika-digits.woff2') format('woff2'); font-display: block; font-weight: 400; }
+@font-face { font-family: XiaoyaShort; src: url('/fonts/short-stack-digits.woff2') format('woff2'); font-display: block; font-weight: 400; }
+@font-face { font-family: XiaoyaLead; src: url('/fonts/xiaoya-digits.woff2') format('woff2'); font-display: block; font-weight: 400; }
+@font-face { font-family: XiaoyaRound; src: url('/fonts/fredoka-digits.woff2') format('woff2'); font-display: block; font-weight: 400; }
 @font-face { font-family: XiaoyaWenkai; src: url('/fonts/lxgw-wenkai-digits.woff2') format('woff2'); font-display: block; font-weight: 400; }
+@font-face { font-family: XiaoyaYozai; src: url('/fonts/yozai-digits.woff2') format('woff2'); font-display: block; font-weight: 400; }
 @font-face { font-family: XiaoyaSerif; src: url('/fonts/noto-serif-sc-digits.woff2') format('woff2'); font-display: block; font-weight: 400; }
+@font-face { font-family: XiaoyaDots; src: url('/fonts/codystar-digits.woff2') format('woff2'); font-display: block; font-weight: 400; }
 @page { size: A4 portrait; margin: 0; }
