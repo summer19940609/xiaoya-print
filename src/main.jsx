@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { chineseNumber, defaultTheme, fontLabels, fontScaleLabels, fontWeightLabels, layouts, makeCells, mathLabels, parseCustom, readSettings, resolveTheme, settingsQuery, sizeLabels, themeColors, themeLabels, themeTitles, traceShadeLabels, traceStyleLabels } from './logic.js';
+import { chineseNumber, defaultTheme, fontLabels, fontScaleLabels, fontWeightLabels, layouts, makeCells, mathLabels, orientationLabels, parseCustom, readSettings, resolveTheme, settingsQuery, sizeLabels, themeColors, themeLabels, themeTitles, traceShadeLabels, traceStyleLabels } from './logic.js';
 import Sheet, { FontSample } from './Sheet.jsx';
 import './styles.css';
 
@@ -42,8 +42,8 @@ function App() {
   const [fontError, setFontError] = useState('');
   const isMath = settings.template === 'math';
   const isTrace = settings.template === 'trace';
-  const { template, range, custom, math, size, copies, shuffle, blank } = settings;
-  const cells = useMemo(() => makeCells({ template, range, custom, math, size, copies, shuffle, blank }), [template, range, custom, math, size, copies, shuffle, blank]);
+  const { template, range, custom, math, size, copies, shuffle, blank, orientation } = settings;
+  const cells = useMemo(() => makeCells({ template, range, custom, math, size, copies, shuffle, blank, orientation }), [template, range, custom, math, size, copies, shuffle, blank, orientation]);
   const capacity = layouts[size].columns * layouts[size].rows;
   const pageCount = Math.ceil(cells.length / capacity);
   const update = (key, value) => setSettings(current => ({ ...current, [key]: value }));
@@ -92,8 +92,9 @@ function App() {
   }
 
   const summary = [`${cells.length} ${isMath ? '道题' : '个格子'}`, `共 ${pageCount} 张 A4 纸`, sizeLabels[size]];
+  if (size === 'eighth') summary.push(orientation === 'long' ? '字随长边' : '字随短边');
   if (settings.font === 'custom' && customFontName) summary.push(`自定义字体（${customFontName}）`);
-  else if (settings.font !== 'sans') summary.push(fontLabels[settings.font].split('（')[0]);
+  else if (settings.font !== 'andika') summary.push(fontLabels[settings.font].split('（')[0]);
   if (settings.fontScale !== 'normal') summary.push(fontScaleLabels[settings.fontScale]);
   if (settings.fontWeight === 'bold') summary.push('加粗笔画');
   if (!isMath) {
@@ -165,6 +166,7 @@ function App() {
             </div>
           </div>
           <div className="col-span-2 grid grid-cols-1 gap-3 min-[481px]:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]"><div className="min-w-0 workspace:mb-4"><label className={fieldLabel} htmlFor="size">格子大小</label><Select id="size" value={size} onChange={e => update('size', e.target.value)}>{['quarter', 'eighth', '40', '50', '60'].map(value => <option value={value} key={value}>{sizeLabels[value]}</option>)}</Select></div><div className="min-w-0 workspace:mb-4"><label className={fieldLabel} htmlFor="copies">{isMath ? '题目页数' : '重复份数'}</label><Select id="copies" value={copies} onChange={e => update('copies', e.target.value)}>{['1', '2', '3'].map(value => <option value={value} key={value}>{value} {isMath ? '页' : '份'}</option>)}</Select></div></div>
+          <div className="col-span-2 min-w-0 workspace:mb-4" id="orientation-field" hidden={size !== 'eighth'}><label className={fieldLabel} htmlFor="orientation">数字纵横</label><Select id="orientation" value={orientation} onChange={e => update('orientation', e.target.value)}>{Object.entries(orientationLabels).map(([value, text]) => <option value={value} key={value}>{text}</option>)}</Select></div>
           <div className="col-span-2"><span className={fieldLabel} id="color-label">打印颜色</span><div className="flex gap-1 rounded-md bg-well p-1" role="group" aria-labelledby="color-label">{[['mono', '黑白省墨'], ['color', '鲜艳彩色']].map(([value, text]) => <button className={`flex min-h-11 flex-1 cursor-pointer items-center justify-center gap-2 rounded-sm border border-transparent px-2 text-[12px] whitespace-nowrap text-muted transition-colors hover:text-ink aria-pressed:border-rule-2 aria-pressed:bg-panel aria-pressed:font-medium aria-pressed:text-ink workspace:min-h-8 ${focus}`} type="button" aria-pressed={settings.color === value} onClick={() => update('color', value)} key={value}><span className={`h-3 w-3 shrink-0 rounded-sm shadow-[inset_0_0_0_1px_var(--color-rule-2)] ${value === 'mono' ? 'bg-print-mono' : 'bg-[conic-gradient(var(--color-print-red),var(--color-print-orange),var(--color-print-yellow),var(--color-print-green),var(--color-print-cyan),var(--color-print-blue),var(--color-print-purple),var(--color-print-red))]'}`} aria-hidden="true" />{text}</button>)}</div></div>
         </div><p className="shrink-0 border-t border-rule pt-3 text-[12px] leading-[1.6] text-muted workspace:pt-4">选择 A4、纵向、100% 实际大小，关闭浏览器页眉页脚；也可以在打印窗口中保存为 PDF。</p>
       </aside>

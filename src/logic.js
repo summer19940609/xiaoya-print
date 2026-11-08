@@ -1,5 +1,6 @@
 export const layouts = { quarter: { columns: 2, rows: 2 }, eighth: { columns: 2, rows: 4 }, 40: { columns: 4, rows: 5 }, 50: { columns: 3, rows: 4 }, 60: { columns: 3, rows: 3 } };
 export const sizeLabels = { quarter: 'A4 四等分（4 格）', eighth: 'A4 八等分（8 格）', 40: '4 厘米正方形', 50: '5 厘米正方形', 60: '6 厘米正方形' };
+export const orientationLabels = { long: '沿长边（旋转 90°）', upright: '沿短边（正常直立）' };
 export const mathLabels = {
   add10: '10 以内加法',
   sub10: '10 以内减法',
@@ -42,12 +43,12 @@ export const defaultTheme = 'sky';
 export function resolveTheme(value) {
   return Object.prototype.hasOwnProperty.call(themeLabels, value) ? value : defaultTheme;
 }
-export const defaults = { template: 'number', range: '1-10', custom: '1, 3, 5-8, 12', math: 'add10', shuffle: false, blank: false, label: false, parity: false, grid: false, note: 'none', font: 'sans', fontScale: 'normal', fontWeight: 'normal', traceStyle: 'outline', traceShade: 'medium', size: '50', copies: '1', color: 'mono' };
+export const defaults = { template: 'number', range: '1-10', custom: '1, 3, 5-8, 12', math: 'add10', shuffle: false, blank: false, label: false, parity: false, grid: false, note: 'none', font: 'andika', fontScale: 'normal', fontWeight: 'normal', traceStyle: 'outline', traceShade: 'medium', size: '50', copies: '1', color: 'mono', orientation: 'long' };
 
 export function readSettings(search) {
   const params = new URLSearchParams(search);
   const settings = { ...defaults };
-  const choices = { template: ['number', 'trace', 'math'], range: ['0-10', '1-10', '11-20', '1-20', '1-50', '1-100', 'custom'], math: Object.keys(mathLabels), note: ['none', 'dots', 'ten', 'sticks', 'blocks'], font: Object.keys(fontLabels), fontScale: Object.keys(fontScaleLabels), fontWeight: Object.keys(fontWeightLabels), traceStyle: Object.keys(traceStyleLabels), traceShade: Object.keys(traceShadeLabels), size: Object.keys(sizeLabels), copies: ['1', '2', '3'], color: ['mono', 'color'] };
+  const choices = { template: ['number', 'trace', 'math'], range: ['0-10', '1-10', '11-20', '1-20', '1-50', '1-100', 'custom'], math: Object.keys(mathLabels), note: ['none', 'dots', 'ten', 'sticks', 'blocks'], font: Object.keys(fontLabels), fontScale: Object.keys(fontScaleLabels), fontWeight: Object.keys(fontWeightLabels), traceStyle: Object.keys(traceStyleLabels), traceShade: Object.keys(traceShadeLabels), size: Object.keys(sizeLabels), copies: ['1', '2', '3'], color: ['mono', 'color'], orientation: Object.keys(orientationLabels) };
   for (const [key, values] of Object.entries(choices)) if (values.includes(params.get(key))) settings[key] = params.get(key);
   for (const key of ['shuffle', 'blank', 'label', 'parity', 'grid']) settings[key] = params.get(key) === '1';
   if (params.has('custom')) settings.custom = params.get('custom');
@@ -69,6 +70,7 @@ export function settingsQuery(settings) {
     if (key === 'font' && settings.font === 'custom') continue;
     if (settings[key] !== defaults[key]) params.set(key, settings[key]);
   }
+  if (settings.size === 'eighth' && settings.orientation !== defaults.orientation) params.set('orientation', settings.orientation);
   return params.toString();
 }
 

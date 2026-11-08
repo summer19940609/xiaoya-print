@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { chineseNumber, defaults, defaultTheme, makeCells, makeProblem, mathLabels, numberParity, parseCustom, readSettings, resolveTheme, settingsQuery, themeLabels } from '../src/logic.js';
+import { chineseNumber, defaults, defaultTheme, makeCells, makeProblem, mathLabels, numberParity, orientationLabels, parseCustom, readSettings, resolveTheme, settingsQuery, themeLabels } from '../src/logic.js';
 
 test('自定义数字、中文数字与单双数', () => {
   assert.deepEqual(parseCustom('1, 3，5-8, 3'), [1, 3, 5, 6, 7, 8]);
@@ -25,6 +25,14 @@ test('链接设置校验与还原', () => {
   const math = { ...defaults, template: 'math', math: 'bond20' };
   assert.deepEqual(readSettings(`?${settingsQuery(math)}`), math);
 });
+test('八等分数字纵横方向设置与序列化', () => {
+  assert.deepEqual(Object.keys(orientationLabels), ['long', 'upright']);
+  const eighthUpright = { ...defaults, size: 'eighth', orientation: 'upright' };
+  assert.equal(readSettings(`?${settingsQuery(eighthUpright)}`).orientation, 'upright');
+  assert.equal(readSettings('?size=eighth&orientation=invalid').orientation, 'long');
+  assert.equal(settingsQuery({ ...defaults, size: '50', orientation: 'upright' }).includes('orientation'), false);
+});
+
 
 test('主题校验与默认回退', () => {
   assert.deepEqual(Object.keys(themeLabels), ['sky', 'sprout', 'night']);

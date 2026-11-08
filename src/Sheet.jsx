@@ -58,13 +58,13 @@ function resolveTraceGlyphClass(trace, traceStyle, bold, font) {
 }
 
 export function FontSample({ settings, customFontName }) {
-  const { font = 'sans', fontScale = 'normal', fontWeight = 'normal', template = 'number', traceStyle = 'outline', traceShade = 'medium' } = settings || {};
+  const { font = 'andika', fontScale = 'normal', fontWeight = 'normal', template = 'number', traceStyle = 'outline', traceShade = 'medium' } = settings || {};
   const trace = template === 'trace';
   const bold = fontWeight === 'bold';
   const sampleScale = fontScale === 'small' ? 'text-[19px] max-workspace:text-[18px]' : fontScale === 'large' ? 'text-[25px] max-workspace:text-[22px]' : 'text-[22px] max-workspace:text-[20px]';
   const traceClass = trace ? `${sampleTraceShades[traceShade] || sampleTraceShades.medium} ${resolveTraceGlyphClass(true, traceStyle, bold, font)}` : `text-ink ${bold ? 'font-bold' : ''}`;
-  const tag = font === 'custom' ? `本地字体 · ${customFontName || '自定义'}` : fontTags[font] || fontTags.sans;
-  return <div className={`flex min-h-12 items-center justify-between gap-2 overflow-hidden rounded-sm bg-well px-3 py-2 ${digitFonts[font] || digitFonts.sans} max-workspace:col-span-2 workspace:mt-2`} aria-label="所选字体预览">
+  const tag = font === 'custom' ? `本地字体 · ${customFontName || '自定义'}` : fontTags[font] || fontTags.andika;
+  return <div className={`flex min-h-12 items-center justify-between gap-2 overflow-hidden rounded-sm bg-well px-3 py-2 ${digitFonts[font] || digitFonts.andika} max-workspace:col-span-2 workspace:mt-2`} aria-label="所选字体预览">
     <span className={`leading-6 tracking-[.06em] whitespace-nowrap lining-nums ${sampleScale} ${traceClass}`}>{template === 'math' ? '12 + 8 = 20' : '1234567890'}</span>
     <span className="font-body text-[11px] leading-4 whitespace-nowrap text-muted">{tag}</span>
   </div>;
@@ -105,24 +105,35 @@ function QuantityNote({ value, style, trace }) {
 }
 
 function Cell({ cell, tone, settings, chineseNumber }) {
-  if (cell.kind === 'blank') return <div className={`${baseCell} grid place-items-center`} aria-label="空白书写格"><GridGuide enabled={settings.grid} /></div>;
+  const rotate = settings.size === 'eighth' && (settings.orientation ?? 'long') === 'long';
+  const rotateBox = 'relative flex h-[var(--cell-width)] w-[var(--cell-height)] shrink-0 rotate-90 items-center justify-center';
+  if (cell.kind === 'blank') {
+    return <div className={`${baseCell} grid place-items-center overflow-hidden`} aria-label="空白书写格">
+      {rotate ? <div className={rotateBox}><GridGuide enabled={settings.grid} /></div> : <GridGuide enabled={settings.grid} />}
+    </div>;
+  }
   const trace = settings.template === 'trace';
   const bold = settings.fontWeight === 'bold';
   const ink = trace ? (traceShades[settings.traceShade] || traceShades.medium) : settings.color === 'mono' ? 'text-print-mono' : tones[tone - 1];
   const mathWeight = bold ? 'font-bold' : '';
   if (cell.kind === 'math') {
+    let content;
+    let contentClass = '';
+    let accessible = '';
     if (cell.type === 'count') {
       const noteStyle = cell.value > 10 ? 'ten' : 'dots';
-      return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.055)] [--mark-size:.068] [--mark-gap:.024] ${ink}`} aria-label={`点数 ${cell.value}，填数字`}>
+      accessible = `点数 ${cell.value}，填数字`;
+      contentClass = 'flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.055)] [--mark-size:.068] [--mark-gap:.024]';
+      content = <>
         <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-print-label" aria-hidden="true">看图填数</span>
         <QuantityNote value={cell.value} style={noteStyle} trace={false} />
         <span className="flex items-center justify-center text-[calc(var(--cell-size)*.15*var(--font-scale,1))] leading-none whitespace-nowrap" aria-hidden="true"><span className={box} /></span>
-      </div>;
-    }
-    if (cell.type === 'bond') {
+      </>;
+    } else if (cell.type === 'bond') {
       const [total, left, right] = cell.values;
-      const accessible = cell.missing === 0 ? `${left} 和 ${right} 合成几，填数字` : `${total} 分成 ${cell.missing === 1 ? `几 和 ${right}` : `${left} 和 几`}，填数字`;
-      return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.03)] ${ink}`} aria-label={accessible}>
+      accessible = cell.missing === 0 ? `${left} 和 ${right} 合成几，填数字` : `${total} 分成 ${cell.missing === 1 ? `几 和 ${right}` : `${left} 和 几`}，填数字`;
+      contentClass = 'flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.03)]';
+      content = <>
         <span className="font-body text-[calc(var(--cell-size)*.095)] leading-[1.2] whitespace-nowrap text-print-label" aria-hidden="true">数的分与合</span>
         <span className={`flex flex-col items-center justify-center text-[calc(var(--cell-size)*.15*var(--font-scale,1))] leading-none whitespace-nowrap ${mathWeight}`} aria-hidden="true">
           <span className="flex items-center justify-center">{cell.missing === 0 ? <span className={box} /> : total}</span>
@@ -132,33 +143,40 @@ function Cell({ cell, tone, settings, chineseNumber }) {
             <span className="flex items-center justify-center">{cell.missing === 2 ? <span className={box} /> : right}</span>
           </span>
         </span>
-      </div>;
-    }
-    if (cell.type === 'neighbor') {
+      </>;
+    } else if (cell.type === 'neighbor') {
       const center = cell.values[1];
-      return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.08)] ${ink}`} aria-label={`${center} 的相邻数，填数字`}>
+      accessible = `${center} 的相邻数，填数字`;
+      contentClass = 'flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.08)]';
+      content = <>
         <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-print-label" aria-hidden="true">填相邻数</span>
         <span className={`flex items-center justify-center text-[calc(var(--cell-size)*.16*var(--font-scale,1))] leading-none whitespace-nowrap ${mathWeight}`} aria-hidden="true"><span className={box} />，{center}，<span className={box} /></span>
-      </div>;
-    }
-    if (cell.type === 'fill') {
+      </>;
+    } else if (cell.type === 'fill') {
       const [first, second, answer] = cell.values;
-      const accessible = `${cell.missing === 0 ? '空格' : first} ${cell.operator} ${cell.missing === 1 ? '空格' : second} = ${answer}，填数字`;
-      return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.08)] ${ink}`} aria-label={accessible}>
+      accessible = `${cell.missing === 0 ? '空格' : first} ${cell.operator} ${cell.missing === 1 ? '空格' : second} = ${answer}，填数字`;
+      contentClass = 'flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.08)]';
+      content = <>
         <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-print-label" aria-hidden="true">填数字</span>
         <span className={`flex items-center justify-center text-[calc(var(--cell-size)*.15*var(--font-scale,1))] leading-none whitespace-nowrap ${mathWeight}`} aria-hidden="true">{cell.missing === 0 ? <span className={box} /> : first} {cell.operator} {cell.missing === 1 ? <span className={box} /> : second} = {answer}</span>
-      </div>;
-    }
-    if (cell.type === 'compare' || cell.type === 'sequence') {
+      </>;
+    } else if (cell.type === 'compare' || cell.type === 'sequence') {
       const compare = cell.type === 'compare';
       const values = cell.values.map((value, index) => !compare && index === cell.missing ? '空格' : String(value));
-      const accessible = compare ? `${values[0]} 和 ${values[1]}，填写大于、小于或等于` : `${values.join('、')}，填数字`;
-      return <div className={`${baseCell} flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.08)] ${ink}`} aria-label={accessible}>
+      accessible = compare ? `${values[0]} 和 ${values[1]}，填写大于、小于或等于` : `${values.join('、')}，填数字`;
+      contentClass = 'flex flex-col items-center justify-center gap-[calc(var(--cell-size)*.08)]';
+      content = <>
         <span className="font-body text-[calc(var(--cell-size)*.1)] leading-[1.3] whitespace-nowrap text-print-label" aria-hidden="true">{compare ? '填 >、< 或 =' : '填数字'}</span>
         <span className={`flex items-center justify-center text-[calc(var(--cell-size)*.16*var(--font-scale,1))] leading-none whitespace-nowrap ${mathWeight}`} aria-hidden="true">{compare ? <>{cell.values[0]}<span className={box} />{cell.values[1]}</> : cell.values.map((value, index) => <React.Fragment key={index}>{index > 0 ? '，' : null}{index === cell.missing ? <span className={box} /> : value}</React.Fragment>)}</span>
-      </div>;
+      </>;
+    } else {
+      accessible = `${cell.text} 作答`;
+      contentClass = 'grid place-items-center';
+      content = <span className={`text-[calc(var(--cell-size)*.15*var(--font-scale,1))] leading-none tracking-[.02em] whitespace-nowrap lining-nums [text-box:trim-both_cap_alphabetic] ${mathWeight}`}>{cell.text} <span className="ml-[.08em] inline-block h-0 w-[1.2em] border-b border-cut align-baseline" aria-hidden="true" /></span>;
     }
-    return <div className={`${baseCell} grid place-items-center ${ink}`} aria-label={`${cell.text} 作答`}><span className={`text-[calc(var(--cell-size)*.15*var(--font-scale,1))] leading-none tracking-[.02em] whitespace-nowrap lining-nums [text-box:trim-both_cap_alphabetic] ${mathWeight}`}>{cell.text} <span className="ml-[.08em] inline-block h-0 w-[1.2em] border-b border-cut align-baseline" aria-hidden="true" /></span></div>;
+    return <div className={`${baseCell} ${rotate ? 'grid place-items-center overflow-hidden' : contentClass} ${ink}`} aria-label={accessible}>
+      {rotate ? <div className={`relative flex h-[var(--cell-width)] w-[var(--cell-height)] shrink-0 rotate-90 ${contentClass}`}>{content}</div> : content}
+    </div>;
   }
   const cn = settings.label ? chineseNumber(cell.value) : '';
   const parity = settings.parity ? numberParity(cell.value) : '';
@@ -168,17 +186,20 @@ function Cell({ cell, tone, settings, chineseNumber }) {
   const variables = note && label ? '[--num-scale:.42] [--note-gap:.028] [--mark-size:.06] [--mark-gap:.022] [--label-scale:.105]' : `[--mark-size:.072] [--mark-gap:.028] [--label-scale:.12] [--note-gap:.045] ${note ? '[--num-scale:.5]' : label ? '[--num-scale:.56]' : '[--num-scale:.67]'}`;
   const fallback = settings.font === 'wenkai' || settings.font === 'yozai' ? 'supports-not-[text-box:trim-both_cap_alphabetic]:translate-y-[.016em]' : settings.font === 'serif' ? 'supports-not-[text-box:trim-both_cap_alphabetic]:-translate-y-[.075em]' : 'supports-not-[text-box:trim-both_cap_alphabetic]:-translate-y-[.077em]';
   const glyphClass = resolveTraceGlyphClass(trace, settings.traceStyle || 'outline', bold, settings.font);
-  return <div className={`${baseCell} ${stacked ? 'flex flex-col items-center justify-center gap-[calc(var(--cell-size)*var(--note-gap))]' : 'grid place-items-center'} ${variables} ${ink}`} aria-label={`${cell.value}${label ? `，${label}` : ''}`}>
+  const innerContent = <>
     <GridGuide enabled={settings.grid} />
     <span className={`relative z-1 text-[calc(var(--cell-size)*var(--num-scale)*var(--font-scale,1))] leading-none lining-nums [text-box:trim-both_cap_alphabetic] ${fallback} ${glyphClass}`}>{cell.value}</span>{label ? <span className="relative z-1 font-body text-[calc(var(--cell-size)*var(--label-scale))] leading-none font-medium tracking-[.03em] whitespace-nowrap">{label}</span> : null}<QuantityNote value={cell.value} style={settings.note} trace={trace} />
+  </>;
+  const layoutClass = stacked ? 'flex flex-col items-center justify-center gap-[calc(var(--cell-size)*var(--note-gap))]' : 'grid place-items-center';
+  return <div className={`${baseCell} ${rotate ? 'grid place-items-center overflow-hidden' : layoutClass} ${variables} ${ink}`} aria-label={`${cell.value}${label ? `，${label}` : ''}`}>
+    {rotate ? <div className={`relative flex h-[var(--cell-width)] w-[var(--cell-height)] shrink-0 rotate-90 ${layoutClass}`}>{innerContent}</div> : innerContent}
   </div>;
 }
-
 export default function Sheet({ cells, page, capacity, settings, chineseNumber }) {
   const size = settings.size;
   const split = size === 'quarter' || size === 'eighth';
   let toneIndex = cells.slice(0, page * capacity).filter(cell => cell.kind !== 'blank').length;
-  const fontClass = digitFonts[settings.font] || digitFonts.sans;
+  const fontClass = digitFonts[settings.font] || digitFonts.andika;
   const scaleClass = fontScales[settings.fontScale] || fontScales.normal;
   return <article className={`@container flex aspect-[210/297] flex-col bg-white shadow-sheet ${fontClass} ${scaleClass} ${sheetSizes[size]} ${split ? 'p-0 print:!h-[297mm] print:!p-0' : 'p-[6.6666667%] print:!h-[296mm] print:!p-[14mm]'} print:!m-0 print:!w-[210mm] print:!aspect-auto print:!overflow-hidden print:!shadow-none print:break-after-page print:break-inside-avoid print:last:break-after-auto`}>
     <div className="grid min-h-0 flex-1 grid-cols-[repeat(var(--columns),var(--cell-width))] auto-rows-[var(--cell-height)] content-start justify-center">{cells.slice(page * capacity, (page + 1) * capacity).map((cell, index) => <Cell cell={cell} settings={settings} tone={cell.kind === 'blank' ? undefined : toneIndex++ % 7 + 1} chineseNumber={chineseNumber} key={index} />)}</div>
