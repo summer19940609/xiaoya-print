@@ -108,7 +108,7 @@ function Cell({ cell, tone, settings, chineseNumber }) {
   const rotate = settings.size === 'eighth' && (settings.orientation ?? 'long') === 'long';
   const rotateBox = 'relative flex h-[var(--cell-width)] w-[var(--cell-height)] shrink-0 rotate-90 items-center justify-center';
   if (cell.kind === 'blank') {
-    return <div className={`${baseCell} grid place-items-center overflow-hidden`} aria-label="空白书写格">
+    return <div className={`${baseCell} ${rotate ? 'flex items-center justify-center overflow-hidden' : 'grid place-items-center'}`} aria-label="空白书写格">
       {rotate ? <div className={rotateBox}><GridGuide enabled={settings.grid} /></div> : <GridGuide enabled={settings.grid} />}
     </div>;
   }
@@ -174,7 +174,7 @@ function Cell({ cell, tone, settings, chineseNumber }) {
       contentClass = 'grid place-items-center';
       content = <span className={`text-[calc(var(--cell-size)*.15*var(--font-scale,1))] leading-none tracking-[.02em] whitespace-nowrap lining-nums [text-box:trim-both_cap_alphabetic] ${mathWeight}`}>{cell.text} <span className="ml-[.08em] inline-block h-0 w-[1.2em] border-b border-cut align-baseline" aria-hidden="true" /></span>;
     }
-    return <div className={`${baseCell} ${rotate ? 'grid place-items-center overflow-hidden' : contentClass} ${ink}`} aria-label={accessible}>
+    return <div className={`${baseCell} ${rotate ? 'flex items-center justify-center overflow-hidden' : contentClass} ${ink}`} aria-label={accessible}>
       {rotate ? <div className={`relative flex h-[var(--cell-width)] w-[var(--cell-height)] shrink-0 rotate-90 ${contentClass}`}>{content}</div> : content}
     </div>;
   }
@@ -191,7 +191,7 @@ function Cell({ cell, tone, settings, chineseNumber }) {
     <span className={`relative z-1 text-[calc(var(--cell-size)*var(--num-scale)*var(--font-scale,1))] leading-none lining-nums [text-box:trim-both_cap_alphabetic] ${fallback} ${glyphClass}`}>{cell.value}</span>{label ? <span className="relative z-1 font-body text-[calc(var(--cell-size)*var(--label-scale))] leading-none font-medium tracking-[.03em] whitespace-nowrap">{label}</span> : null}<QuantityNote value={cell.value} style={settings.note} trace={trace} />
   </>;
   const layoutClass = stacked ? 'flex flex-col items-center justify-center gap-[calc(var(--cell-size)*var(--note-gap))]' : 'grid place-items-center';
-  return <div className={`${baseCell} ${rotate ? 'grid place-items-center overflow-hidden' : layoutClass} ${variables} ${ink}`} aria-label={`${cell.value}${label ? `，${label}` : ''}`}>
+  return <div className={`${baseCell} ${rotate ? 'flex items-center justify-center overflow-hidden' : layoutClass} ${variables} ${ink}`} aria-label={`${cell.value}${label ? `，${label}` : ''}`}>
     {rotate ? <div className={`relative flex h-[var(--cell-width)] w-[var(--cell-height)] shrink-0 rotate-90 ${layoutClass}`}>{innerContent}</div> : innerContent}
   </div>;
 }
